@@ -1,0 +1,43 @@
+# Ignore IDE files
+.idea/
+.eggs/
+.egg-info/
+dist/
+build/
+.tox/
+.nox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.egg
+clientsec.json
+*.egg-info/
+.local/
+.dbshell
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.pytest_cache
+.windsurf/
+
+# Ignore PyInstaller files
+dist/
+build/
+
+# Ignore pycache
+__pycache__/
+
+# Ignore Python cache
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore mypy cache
+.mypy_cache/
+
+# Ignore VSCode files
+.vscode/
+
+# Ignore data files
+data/raw
