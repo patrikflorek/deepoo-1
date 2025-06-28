@@ -11,9 +11,11 @@ This project aims to fine-tune a Deep Neural Network (DNN) for object detection 
 - **Annotations:** Bitmap masks indicating object presence
 
 ## 3. Dataset Merging Strategy
-- The merging script will automatically extract any archives (e.g., .zip, .tar.xz) found in `data/raw/` into temporary subdirectories before merging.
-- Merge both datasets into a unified format while preserving original train/val/test splits.
-- Output merged datasets to `data/processed/{train,val,test}/`.
+- The merging script will automatically extract any archives (e.g., .zip, .tar.xz) found in `data/raw/` into temporary subdirectories before merging. You will be prompted before overwriting existing extraction or cleaning up.
+- Both datasets are merged into a unified format while preserving the original train/test split ratio (80/20 as in cut_1000x1000_20230117).
+- If a mask is missing for any image, an all-zero (background) 1-bit PNG mask is created automatically with the same size as the image.
+- Output merged datasets to `data/processed/{train,test}/images` and `data/processed/{train,test}/masks`.
+- Filenames are prefixed with the dataset name for uniqueness.
 - Normalize annotation formats if necessary.
 - Handle different image sizes:
   - Decide on a common input resolution (e.g., resize all images to 720x960 or 1000x1000, or pad/crop as appropriate)

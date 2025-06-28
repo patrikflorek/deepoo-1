@@ -21,7 +21,13 @@ project_root/
 ```
 
 ## Main Steps
-1. **Dataset Merging:** Combine two datasets (1000x1000 cutouts and 720x960 images) into a unified format for training, while preserving original train/val/test splits.
+1. **Dataset Merging:**
+   - Archives in `data/raw/` are automatically extracted.
+   - Two datasets (1000x1000 cutouts and 720x960 images) are merged into a unified train/test split.
+   - The split ratio is preserved (80/20 by default, matching the original 424:106 split).
+   - If a mask is missing for any image, an all-zero (background) 1-bit PNG mask is created automatically.
+   - Naming conventions and formats are unified; filenames are prefixed by dataset for uniqueness.
+   - The merging script is interactive and will prompt before overwriting extraction or cleaning up temporary files.
 2. **Preprocessing:** Standardize image and annotation formats, handle size differences, and prepare data for training.
 3. **Model Training:** Fine-tune a lightweight DNN (e.g., MobileNetV2/SSD) using TensorFlow/Keras.
 4. **Evaluation:** Assess model performance using standard object detection metrics.
