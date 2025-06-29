@@ -42,3 +42,4 @@ __pycache__/
 # Ignore data files
 data/raw
 data/processed
+data/normalized

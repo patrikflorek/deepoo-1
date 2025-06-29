@@ -27,9 +27,22 @@ This project aims to fine-tune a Deep Neural Network (DNN) for object detection 
 - Ensure consistent color channels and normalization
 
 ## 5. Model Architecture
-- Select a lightweight DNN suitable for mobile deployment (e.g., MobileNetV2/SSD, EfficientDet-Lite)
-- Adapt input layer to chosen resolution
-- Use transfer learning from pretrained weights if available
+
+### Selected Model: EfficientDet-Lite
+- **Chosen Model:** EfficientDet-Lite (TensorFlow Lite optimized)
+- **Rationale:**
+  - Designed for efficient object detection on mobile and edge devices
+  - Excellent accuracy-to-efficiency ratio
+  - Pre-trained weights available for transfer learning
+  - Flexible input resolution to match dataset (e.g., 720x960 or 1000x1000)
+  - Well-supported in TensorFlow Model Zoo and TFLite ecosystem
+- **Alternatives Considered:**
+  - MobileNetV2-SSD: Faster but less accurate; suitable for more constrained devices
+  - YOLOv4-tiny: Fast but less integrated with TFLite workflows
+- **Action:**
+  - Proceed with EfficientDet-Lite0 or Lite1 as a baseline
+  - Adapt input layer to chosen resolution
+  - Use transfer learning from pretrained weights if available
 
 ## 6. Training Pipeline
 - Scripted pipeline for training, validation, and testing
