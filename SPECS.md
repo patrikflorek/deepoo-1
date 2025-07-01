@@ -1,7 +1,9 @@
-# Project Specification: DNN Object Detection for Mobile (TensorFlow Lite)
+# Project Specification: DNN Semantic Segmentation for Mobile (TensorFlow Lite)
+
+> **Note:** The project originally targeted object detection (bounding boxes) with EfficientDet-Lite. After further review, the focus has shifted to semantic segmentation using DeepLabV3+ (MobileNetV2 backbone) to produce pixelwise object presence masks, which better fits the intended use-case for mobile deployment.
 
 ## 1. Overview
-This project aims to fine-tune a Deep Neural Network (DNN) for object detection using a custom dataset collected via mobile app cameras. The final model will be exported to TensorFlow Lite format for efficient mobile deployment.
+This project aims to fine-tune a Deep Neural Network (DNN) for semantic segmentation using a custom dataset collected via mobile app cameras. The final model will be exported to TensorFlow Lite format for efficient mobile deployment, producing pixelwise masks indicating object presence.
 
 ## 2. Dataset Description
 - **Location:** `data/raw/`
@@ -28,30 +30,35 @@ This project aims to fine-tune a Deep Neural Network (DNN) for object detection 
 
 ## 5. Model Architecture
 
-### Selected Model: EfficientDet-Lite
-- **Chosen Model:** EfficientDet-Lite (TensorFlow Lite optimized)
+### Selected Model: DeepLabV3+ (MobileNetV2 backbone)
+- **Chosen Model:** DeepLabV3+ with MobileNetV2 backbone (TensorFlow Lite optimized)
 - **Rationale:**
-  - Designed for efficient object detection on mobile and edge devices
-  - Excellent accuracy-to-efficiency ratio
+  - Designed for efficient semantic segmentation on mobile and edge devices
+  - Strong accuracy-to-efficiency ratio for pixelwise mask prediction
   - Pre-trained weights available for transfer learning
-  - Flexible input resolution to match dataset (e.g., 720x960 or 1000x1000)
-  - Well-supported in TensorFlow Model Zoo and TFLite ecosystem
+  - Flexible input resolution to match dataset (e.g., 1000x1000)
+  - Well-supported for TensorFlow Lite export and quantization
 - **Alternatives Considered:**
-  - MobileNetV2-SSD: Faster but less accurate; suitable for more constrained devices
-  - YOLOv4-tiny: Fast but less integrated with TFLite workflows
+  - U-Net (with MobileNetV2 or EfficientNet-lite encoder): Simpler but less accurate on complex scenes
+  - DeepLabV3+ with EfficientNet-lite backbone
 - **Action:**
-  - Proceed with EfficientDet-Lite0 or Lite1 as a baseline
-  - Adapt input layer to chosen resolution
-  - Use transfer learning from pretrained weights if available
+  - Proceed with DeepLabV3+ (MobileNetV2 backbone) as the baseline
+  - Adapt input/output layers to match dataset and required mask format
+  - Use transfer learning from pretrained ImageNet weights if available
 
 ## 6. Training Pipeline
-- Scripted pipeline for training, validation, and testing
-- Use TensorFlow/Keras for model definition and training
+- Scripted pipeline for training, validation, and testing using TensorFlow/Keras
+- **Two-stage training:**
+  1. Train only the decoder/head with the MobileNetV2 backbone frozen (feature extraction, lr=0.001)
+  2. Unfreeze the backbone and fine-tune the entire model with a lower learning rate (lr=1e-4)
+- Robust data augmentation (random flip, rotation, translation, brightness/contrast) applied to training images/masks
 - Save best model checkpoints to `models/`
+- Training and validation metrics include accuracy, IoU, and Dice coefficient
+- Guidance for fine-tuning is built into the script (staged training is automated)
 
 ## 7. Evaluation
-- Compute standard object detection metrics (e.g., mAP, IoU)
-- Visualize predictions on validation/test sets
+- Compute standard segmentation metrics (e.g., mean IoU, pixel accuracy)
+- Visualize predicted masks on validation/test sets
 
 ## 8. TensorFlow Lite Conversion
 - Convert trained model to TFLite format

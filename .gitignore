@@ -39,7 +39,6 @@ __pycache__/
 # Ignore VSCode files
 .vscode/
 
-# Ignore data files
-data/raw
-data/processed
-data/normalized
+# Ignore data and models files
+data/
+models/
