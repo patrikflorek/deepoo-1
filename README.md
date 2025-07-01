@@ -60,7 +60,29 @@ The training script (`src/train.py`) implements a two-stage training pipeline:
 
 To fine-tune after initial training, simply run the script as provided; both stages are automated.
 
-4. **Evaluation:** Assess model performance using standard segmentation metrics (e.g., mean IoU, pixel accuracy).
+4. **Evaluation:** Assess model performance using standard segmentation metrics (mean IoU, pixel accuracy, Dice coefficient) using the script `src/evaluate.py`.
+
+### Model Evaluation
+
+The evaluation script (`src/evaluate.py`) computes the following metrics on the test set:
+- **Mean IoU (Intersection over Union)**
+- **Mean Dice coefficient**
+- **Mean Pixel Accuracy**
+
+#### Usage
+```bash
+python src/evaluate.py /path/to/model.h5
+```
+- Optionally, add `--visualize` to save sample predictions as overlays:
+```bash
+python src/evaluate.py /path/to/model.h5 --visualize
+```
+Sample visualizations will be saved as PNG images in a subfolder named `evaluation/` inside the directory containing the evaluated model (e.g., `models/250630/evaluation/`). The script prints the exact path for each saved sample.
+
+**Workflow tested:** The evaluation script is fully functional and produces both aggregate metrics and qualitative visualizations. All results are reproducible by running the script as described above.
+
+The test set is prepared identically to the training pipeline, ensuring fair and consistent evaluation. The script prints aggregate metrics and, if requested, shows qualitative results for a few random test images.
+
 5. **TFLite Export:** Convert the trained model to TensorFlow Lite format for mobile deployment.
 6. **Mobile Integration:** Provide instructions and tools for integrating the TFLite model into your mobile app.
 

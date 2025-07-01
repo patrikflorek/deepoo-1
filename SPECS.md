@@ -57,8 +57,9 @@ This project aims to fine-tune a Deep Neural Network (DNN) for semantic segmenta
 - Guidance for fine-tuning is built into the script (staged training is automated)
 
 ## 7. Evaluation
-- Compute standard segmentation metrics (e.g., mean IoU, pixel accuracy)
-- Visualize predicted masks on validation/test sets
+- Compute standard segmentation metrics (mean IoU, pixel accuracy, Dice coefficient) using `src/evaluate.py`
+- Save predicted mask visualizations as PNG files in `<model_dir>/evaluation/` for each evaluated model
+- The evaluation pipeline is implemented and tested; all metrics and qualitative results are reproducible via the script.
 
 ## 8. TensorFlow Lite Conversion
 - Convert trained model to TFLite format
