@@ -40,5 +40,5 @@ __pycache__/
 .vscode/
 
 # Ignore data and models files
-data/
-models/
+/data/
+/models/
