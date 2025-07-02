@@ -64,8 +64,8 @@ This project aims to fine-tune a Deep Neural Network (DNN) for semantic segmenta
 - The evaluation pipeline is implemented and tested; all metrics and qualitative results are reproducible via the script.
 
 ## 8. TensorFlow Lite Conversion
-- Convert trained model to TFLite format
-- Validate TFLite model accuracy and inference speed
+- Export trained models to **fully-INT8 TFLite** using `src/export_tflite.py` (post-training quantisation with a representative dataset).
+- Validate TFLite accuracy and speed with `src/evaluate_tflite.py` (same metrics as the Keras evaluation). Optional `--visualize` flag saves overlay PNGs in `<tflite_dir>/evaluation/`.
 - Store exported models in `models/tflite/`
 
 ## 9. Mobile Integration
@@ -97,7 +97,8 @@ project_root/
 - `src/data/merge_datasets.py`: Merge and preprocess datasets
 - `src/train.py`: Training pipeline
 - `src/evaluate.py`: Evaluation script
-- `src/export_tflite.py`: Convert model to TFLite
+- `src/export_tflite.py`: Export/quantize model to fully-INT8 TFLite
+- `src/evaluate_tflite.py`: Evaluate TFLite model and optionally visualize predictions
 
 ## 12. Dependencies
 - Python 3.x

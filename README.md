@@ -85,8 +85,29 @@ Sample visualizations will be saved as PNG images in a subfolder named `evaluati
 
 The test set is prepared identically to the training pipeline, ensuring fair and consistent evaluation. The script prints aggregate metrics and, if requested, shows qualitative results for a few random test images.
 
-5. **TFLite Export:** Convert the trained model to TensorFlow Lite format for mobile deployment.
-6. **Mobile Integration:** Provide instructions and tools for integrating the TFLite model into your mobile app.
+5. **TFLite Export:** Convert the trained model to a **fully-INT8 TensorFlow Lite** model for mobile deployment using `src/export_tflite.py`.
+
+   ```bash
+   # Export a quantised model (default 100 calibration images)
+   python src/export_tflite.py /path/to/best_model.h5 \
+       --num_calib_images 100 \
+       --output_dir models/tflite/
+   ```
+
+   The script will:
+   1. Load the trained Keras model (`.h5` or SavedModel).
+   2. Build a representative dataset from training images for post-training calibration.
+   3. Produce a **fully-int8** `.tflite` file ready for on-device inference. The file is written to `models/tflite/<model>_int8.tflite`.
+
+6. **TFLite Evaluation:** Verify quantised model accuracy with `src/evaluate_tflite.py`.
+
+   ```bash
+   python src/evaluate_tflite.py models/tflite/best_model_int8.tflite --visualize --num_vis 5
+   ```
+
+   Metrics (IoU, Dice, pixel accuracy) are printed and sample visualizations are saved to `models/tflite/evaluation/`.
+
+7. **Mobile Integration:** Provide instructions and tools for integrating the TFLite model into your mobile app.
 
 ## Getting Started
 - See `SPECS.md` for a detailed project plan and milestones.
