@@ -11,33 +11,12 @@ Training script for EfficientDet-Lite object detection (TensorFlow/Keras)
 Adapt and fill in as needed!
 """
 import random
-from pathlib import Path
 import tensorflow as tf
 from tensorflow import keras
-
-# --- CONFIGURATION ---
-IMG_SIZE = (1000, 1000)
-BATCH_SIZE = 4  # Adjust as needed
-EPOCHS = 50
-NUM_CLASSES = 1  # Change if you have more than one object class
-
-DATA_DIR = Path(__file__).resolve().parent.parent / 'data' / 'normalized'
-TRAIN_IMG_DIR = DATA_DIR / 'train' / 'images'
-TRAIN_MASK_DIR = DATA_DIR / 'train' / 'masks'
-TEST_IMG_DIR = DATA_DIR / 'test' / 'images'
-TEST_MASK_DIR = DATA_DIR / 'test' / 'masks'
-MODEL_DIR = Path(__file__).resolve().parent.parent / 'models'
-MODEL_DIR.mkdir(parents=True, exist_ok=True)
-
-# --- DATA LOADING ---
-def list_image_mask_pairs(img_dir, mask_dir):
-    img_files = sorted([f for f in img_dir.iterdir() if f.suffix in ['.png', '.jpg', '.jpeg']])
-    pairs = []
-    for img_path in img_files:
-        mask_path = mask_dir / (img_path.stem + '.png')
-        if mask_path.exists():
-            pairs.append((str(img_path), str(mask_path)))
-    return pairs
+from src.config import IMG_SIZE, BATCH_SIZE, EPOCHS, NUM_CLASSES, TRAIN_IMG_DIR, TRAIN_MASK_DIR, TEST_IMG_DIR, TEST_MASK_DIR, MODEL_DIR, VAL_SPLIT
+from src.model.deeplab import DeepLabV3Plus
+from src.model.metrics import iou_metric, dice_metric
+from src.data.dataloader import list_image_mask_pairs, load_image_mask, augment_image_mask, make_dataset
 
 train_pairs = list_image_mask_pairs(TRAIN_IMG_DIR, TRAIN_MASK_DIR)
 test_pairs = list_image_mask_pairs(TEST_IMG_DIR, TEST_MASK_DIR)

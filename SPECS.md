@@ -51,7 +51,9 @@ This project aims to fine-tune a Deep Neural Network (DNN) for semantic segmenta
 - **Two-stage training:**
   1. Train only the decoder/head with the MobileNetV2 backbone frozen (feature extraction, lr=0.001)
   2. Unfreeze the backbone and fine-tune the entire model with a lower learning rate (lr=1e-4)
-- Robust data augmentation (random flip, rotation, translation, brightness/contrast) applied to training images/masks
+- Robust data augmentation applied to training images/masks, including:
+  - random flip, rotation, translation, brightness/contrast
+  - **random shrinking and placement**: images/masks are randomly resized to between 224x224 and 1000x1000, then placed at a random location on a black 1000x1000 canvas. This improves robustness to object scale and location.
 - Save best model checkpoints to `models/`
 - Training and validation metrics include accuracy, IoU, and Dice coefficient
 - Guidance for fine-tuning is built into the script (staged training is automated)

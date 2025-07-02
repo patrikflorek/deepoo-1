@@ -54,7 +54,9 @@ The training script (`src/train.py`) implements a two-stage training pipeline:
 1. **Stage 1:** Only the decoder/head is trained, with the MobileNetV2 backbone frozen (feature extraction). A learning rate of 0.001 is used.
 2. **Stage 2:** The backbone is unfrozen and the entire model is fine-tuned with a lower learning rate (1e-4). This enables the model to adapt the pretrained backbone to your dataset for improved performance.
 
-- The pipeline uses robust data augmentation (random flips, rotations, translations, brightness/contrast) for the training set.
+- The pipeline uses robust data augmentation, including:
+  - random flips, rotations, translations, brightness/contrast
+  - **random shrinking and placement**: images/masks are randomly resized to between 224x224 and 1000x1000 pixels, then placed at a random location on a black 1000x1000 canvas. This improves robustness to object scale and location.
 - Best model checkpoints are saved to `models/`.
 - Training and validation metrics include **IoU** (Intersection over Union), **Dice coefficient**, and accuracy (for reference).
 
