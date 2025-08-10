@@ -1,6 +1,6 @@
 from pathlib import Path
 
-IMG_SIZE = (1000, 1000)
+IMG_SIZE = (224, 224)
 BATCH_SIZE = 4
 EPOCHS = 50
 NUM_CLASSES = 1

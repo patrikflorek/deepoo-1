@@ -8,7 +8,7 @@
 
 - Chosen for its strong segmentation accuracy and mobile efficiency
 - Pre-trained weights and transfer learning supported
-- Input resolution will be matched to the unified dataset (e.g., 1000x1000)
+- Fixed input resolution: **224x224**
 - Well-supported for TensorFlow Lite export and mobile inference
 
 **Alternatives considered:** U-Net (with MobileNetV2 encoder), EfficientNet-lite backbone
@@ -41,9 +41,13 @@ project_root/
    - If a mask is missing for any image, an all-zero (background) 1-bit PNG mask is created automatically.
    - Naming conventions and formats are unified; filenames are prefixed by dataset for uniqueness.
    - The merging script is interactive and will prompt before overwriting extraction or cleaning up temporary files.
-2. **Preprocessing:**
+2. **Preprocessing & Sampling:**
 
-All images are converted to RGB and all masks are robustly binarized (0=background, 255=object), handling both 1-bit and 2-bit encodings automatically. Centered padding is applied to produce 1000x1000 images and masks in all splits. The normalized output is saved in `data/normalized/{split}/images` and `data/normalized/{split}/masks`.
+All images are converted to RGB and all masks are robustly binarized (0=background, 255=object), handling both 1-bit and 2-bit encodings automatically.
+
+Before generating cutouts, the contents of `data/processed/train/` are deterministically split into **train** and **val** subsets with an **90/10** ratio (seeded, to ensure reproducibility). If `data/processed/val/` exists, it is ignored to prevent any potential leakage; the new split derived from `processed/train` is used instead. The `test` split is processed as-is.
+
+For each resulting split, a square crop is sampled per image with side length in `[224, min(H, W)]` (biased to be mostly centered on the target regions). Cutouts are saved without resizing to `data/normalized-224x224/{train,val,test}/images` and `data/normalized-224x224/{train,val,test}/masks`. Resizing to **224x224** occurs later in the training pipeline.
 
 Mask normalization logic is robust to mixed encodings and dataset quirks, ensuring compatibility for EfficientDet-Lite training. No further manual mask checking is required.
 
@@ -56,7 +60,7 @@ The training script (`src/train.py`) implements a two-stage training pipeline:
 
 - The pipeline uses robust data augmentation, including:
   - random flips, rotations, translations, brightness/contrast
-  - **random shrinking and placement**: images/masks are randomly resized to between 224x224 and 1000x1000 pixels, then placed at a random location on a black 1000x1000 canvas. This improves robustness to object scale and location.
+  - (Note: input is fixed at 224x224; scale variation is provided by the crop-resize sampling step, so no additional shrink-and-place is applied.)
 - Best model checkpoints are saved to `models/`.
 - Training and validation metrics include **IoU** (Intersection over Union), **Dice coefficient**, and accuracy (for reference).
 
@@ -88,16 +92,18 @@ The test set is prepared identically to the training pipeline, ensuring fair and
 5. **TFLite Export:** Convert the trained model to a **fully-INT8 TensorFlow Lite** model for mobile deployment using `src/export_tflite.py`.
 
    ```bash
-   # Export a quantised model (default 100 calibration images)
-   python src/export_tflite.py /path/to/best_model.h5 \
-       --num_calib_images 100 \
-       --output_dir models/tflite/
-   ```
+  # Export a quantised model (default 100 calibration images)
+  python src/export_tflite.py /path/to/best_model.h5 \
+      --num_calib_images 100 \
+      --output_dir models/tflite/
+  ```
 
    The script will:
    1. Load the trained Keras model (`.h5` or SavedModel).
-   2. Build a representative dataset from training images for post-training calibration.
+   2. Build a representative dataset from training images for post-training calibration at **224x224**.
    3. Produce a **fully-int8** `.tflite` file ready for on-device inference. The file is written to `models/tflite/<model>_int8.tflite`.
+
+   **Important:** Both training and export use **224x224** inputs. If you change the input size, update it consistently in both `src/config.py` and `src/export_tflite.py`, retrain, and re-export so the TFLite model expects the correct shape.
 
 6. **TFLite Evaluation:** Verify quantised model accuracy with `src/evaluate_tflite.py`.
 
