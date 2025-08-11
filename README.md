@@ -37,7 +37,7 @@ project_root/
 1. **Dataset Merging:**
    - Archives in `data/raw/` are automatically extracted.
    - Two datasets (1000x1000 cutouts and 720x960 images) are merged into a unified train/test split.
-   - The split ratio is preserved (80/20 by default, matching the original 424:106 split).
+   - The split ratio is preserved (90/10 by default, matching the original 424:106 split).
    - If a mask is missing for any image, an all-zero (background) 1-bit PNG mask is created automatically.
    - Naming conventions and formats are unified; filenames are prefixed by dataset for uniqueness.
    - The merging script is interactive and will prompt before overwriting extraction or cleaning up temporary files.

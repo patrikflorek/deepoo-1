@@ -67,7 +67,7 @@ def _representative_dataset_gen(num_samples: int):
             img = tf.image.resize(img, IMG_SIZE)
             img = (
                 tf.cast(img, tf.float32) / 255.0
-            )  # model was trained on normalised images
+            )  # model was trained on normalized images
             img = tf.expand_dims(img, 0)  # add batch dimension
             yield [img]
 
