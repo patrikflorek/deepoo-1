@@ -33,6 +33,34 @@ project_root/
 └── README.md        # Project overview
 ```
 
+## Installation
+
+Install into your Python environment (recommended: a virtualenv like `/home/pato/.venvs/deepoo-1`). From the project root:
+
+```bash
+# Option A: Editable install for development
+python -m pip install -e .
+
+# Option B: Regular install
+python -m pip install .
+```
+
+This installs the package as `src` so existing imports like `from src.model.deeplab import DeepLabV3Plus` continue to work. It also provides convenient CLI entry points:
+
+```bash
+# Evaluate a Keras model (.h5 or SavedModel)
+deepoo-evaluate /path/to/model.h5 [--visualize]
+
+# Export fully-int8 TFLite model
+deepoo-export-tflite /path/to/model.h5 --num_calib_images 100 --output_dir models/tflite/
+
+# Evaluate a TFLite model
+deepoo-evaluate-tflite models/tflite/model_int8.tflite [--visualize --num_vis 5]
+
+# Merge raw datasets found in data/raw/
+deepoo-merge-datasets
+```
+
 ## Main Steps
 1. **Dataset Merging:**
    - Archives in `data/raw/` are automatically extracted.
